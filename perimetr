@@ -1,0 +1,29 @@
+function perim(r::Robot)
+    num_Sud=num_side(r, Sud)
+    num_Ost=num_side(r, Ost)
+    for side in (HorizonSide(i) for i=0:3)
+        put_markers(r, side)
+    end
+    move(r, Nord, num_Sud)
+    move(r, West, num_Ost)
+end
+put_markers(r::Robot, side::HorizonSide)=
+while isborder(r, side)==false
+    putmarker!(r)
+    move!(r, side)
+end
+
+function num_side(r::Robot, side)
+    num_sides=0
+    while isborder(r, side)==false
+        move!(r, side)
+        num_sides+=1
+    end
+    return num_sides
+end
+function move(r::Robot, side, num)
+    while num!=0
+        move!(r::Robot, side)
+        num-=1
+    end
+end
