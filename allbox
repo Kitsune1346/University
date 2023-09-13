@@ -1,0 +1,48 @@
+function moved(r::Robot, side, num)
+    while num!=0
+        move!(r::Robot, side)
+        num-=1
+    end
+end
+moved(r, Nord, 5)
+moved(r, Ost, 3)
+function vsepole(r::Robot)
+    num_Sud=num_side(r, Sud)
+    num_Ost=num_side(r, Ost)
+    side=West
+    while !isborder(r, Nord)
+        putmarktuda(r, side)
+        putmarker!(r)
+        move!(r, Nord)
+        side=inverse(side)
+    end
+    putmarktuda(r, side)
+    putmarker!(r)
+    along!(r, Sud)
+    along!(r, Ost)
+    moved(r, Nord, num_Sud)
+    moved(r, West, num_Ost)
+end
+putmarktuda(r::Robot, side)=
+    while isborder(r, side)==false
+        putmarker!(r)
+        move!(r, side)
+    end
+
+function num_side(r::Robot, side)
+    num_sides=0
+    while isborder(r, side)==false
+        move!(r, side)
+        num_sides+=1
+    end
+    return num_sides
+end
+
+function along!(r, side) 
+    while isborder(r, side)==false
+        move!(r, side)
+    end
+end
+
+
+inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
