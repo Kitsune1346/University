@@ -1,0 +1,71 @@
+function mark_dubl(r::Robot) 
+    num_Sud1=numside(r, Sud)
+    num_Ost1=numside(r, Ost)
+    num_Sud2=numside(r, Sud)
+    for side in (HorizonSide(i) for i=0:3)
+        put_markers(r, side)
+    end
+    side=snake(r)
+    mark2border(r, side)
+    along!(r, Sud)
+    along!(r, Ost)
+    move(r, Nord, num_Sud1)
+    move(r, West, num_Ost1)
+    move(r, Nord, num_Sud2)
+end
+
+function mark2border(r::Robot, side1::HorizonSide)#ставит по внешнему периметру внутреннего прямоугольника маркеры
+    while ismarker(r)==false
+        side2=HorizonSide(mod(Int(side1)+1, 4))
+        while isborder(r, side1)==true
+            putmarker!(r)
+            move!(r, side2)
+        end
+        putmarker!(r)
+        move!(r, side1)
+        side1=HorizonSide(mod(Int(side1)+3, 4))
+    end
+end
+function snake(r::Robot)#идёт змейкой и ищет внутренние стенки
+    side=West
+    while isborder(r, Nord)==false
+        while isborder(r, side)==false
+            move!(r, side)
+        end
+        if ismarker(r)==false
+            break
+        end
+        side=inverse(side)
+        move!(r, Nord)
+    end
+    return side
+end
+
+put_markers(r::Robot, side::HorizonSide)=
+while isborder(r, side)==false
+    putmarker!(r)
+    move!(r, side)
+end
+
+function along!(r, side)
+    while isborder(r, side)==false
+        move!(r, side)
+    end
+end
+
+
+function numside(r::Robot, side)#считает сколько клеток преодолел робот до борьера
+    num_sides=0
+    while isborder(r, side)==false
+        move!(r, side)
+        num_sides+=1
+    end
+    return num_sides
+end
+function move(r::Robot, side, num)#идёт в направлении side num количество раз
+    while num!=0
+        move!(r::Robot, side)
+        num-=1
+    end
+end
+inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
