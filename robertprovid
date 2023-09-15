@@ -1,18 +1,28 @@
-function through_the_partition!(r::Robot)
-  findpropusk(r)
+function moved(r::Robot, side::HorizonSide, num)#идёт в направлении side num количество раз
+    while num!=0
+        move!(r, side)
+        num-=1
+    end
 end
-function findpropusk (r::RObot)
-  i=1
-  side=West
-  while isborder(r, Nord)==true
-    moved(r, side, i+1)
-    side=inverse(side)
-  end
+function through_the_partition!(r::Robot)#главная функция
+    i=findpropusk(r)
+    move!(r, Nord)
+    if i%2==0
+        moved(r, Ost, i÷2)
+    else
+        moved(r, West, (i+1)÷2)
+    end
 end
-function moved(r::Robot, side::HorizonSide, num)
-  while num!=0:
-    move(r, side)
-  end
+function findpropusk(r::Robot)#ищет пропуск
+    i=1
+    side=West
+    while isborder(r, Nord)==true
+        moved(r, side, i)
+        side=inverse(side)
+        i=i+1
+    end
+    return i
 end
 
+inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
   
