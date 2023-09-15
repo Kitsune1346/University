@@ -1,0 +1,18 @@
+function through_the_partition!(r::Robot)
+  findpropusk(r)
+end
+function findpropusk (r::RObot)
+  i=1
+  side=West
+  while isborder(r, Nord)==true
+    moved(r, side, i+1)
+    side=inverse(side)
+  end
+end
+function moved(r::Robot, side::HorizonSide, num)
+  while num!=0:
+    move(r, side)
+  end
+end
+
+  
