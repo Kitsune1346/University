@@ -1,0 +1,56 @@
+function move(r::Robot, side, num)
+    while num!=0
+        move!(r::Robot, side)
+        num-=1
+    end
+end
+function perimetrhard(r::Robot)
+    side1, A=vugol(r)
+    for side in (HorizonSide(i) for i=0:3)
+        putmark(r, side)
+    end
+    goback(r, A, inverse(side1))
+end
+
+function putmark(r::Robot, side::HorizonSide)
+    while isborder(r, side)==false
+        putmarker!(r)
+        move!(r, side)
+    end
+end
+
+function vugol(r::Robot)
+    A=Int[]
+    side=Sud
+    while isborder(r, Sud)==false || isborder(r, Ost)==false
+        side=other(side)
+        n=0
+        pushfirst!(A, along!(r, side, n))
+    end
+    return side, A
+end
+
+function along!(r::Robot, side::HorizonSide, n::Integer)
+    while isborder(r, side)==false
+        move!(r, side)
+        n+=1
+    end
+    return n
+end
+
+function goback(r::Robot, A, side1::HorizonSide)
+    for n in A
+        move(r, side1, n)
+        side1=otherside(side1)
+    end
+end
+
+function otherside(side::HorizonSide)
+    side=HorizonSide(mod(Int(side)+1, 2))
+end
+
+function other(side::HorizonSide)
+    side=HorizonSide(2+mod(Int(side)+1, 2))
+end
+
+inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
