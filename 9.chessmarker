@@ -1,0 +1,59 @@
+using  HorizonSideRobots
+r=Robot(animate=true, "untitled.sit")
+
+function putchessmarker(r::Robot)
+    putmarker!(r)
+    state=1
+    num_Ost, state=num_side(r, Ost, state)
+    num_Sud, state=num_side(r, Sud, state)
+    side=West
+    while isborder(r, Nord)==false
+        state=snake(r, side, state)
+        move!(r, Nord)
+        state=chess(state)
+        side=inverse(side)
+    end
+    snake(r, side, state)
+    along(r, Ost)
+    along(r, Sud)
+    move(r, West, num_Ost)
+    move(r, Nord, num_Sud)
+end
+function num_side(r::Robot, side::HorizonSide, state)
+    num=0
+    while isborder(r, side)==false
+        move!(r, side)
+        num+=1
+        state=chess(state)
+    end
+    return num, state
+end
+function chess(state)
+    if state==0
+        putmarker!(r)
+    end
+    state=other(state)
+end
+function snake(r::Robot, side::HorizonSide, state)
+    while isborder(r, side)==false
+        move!(r, side)
+        state=chess(state)
+    end
+    return state
+end
+
+function along(r, side) 
+    while isborder(r, side)==false
+        move!(r, side)
+    end
+end
+
+function move(r::Robot, side, num)
+    while num!=0
+        move!(r::Robot, side)
+        num-=1
+    end
+end
+
+inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
+other(state)=(mod((state+1), 2))
