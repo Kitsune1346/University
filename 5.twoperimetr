@@ -3,35 +3,34 @@ function mark_dubl(r::Robot)
     num_Ost1=numside(r, Ost)
     num_Sud2=numside(r, Sud)
     for side in (HorizonSide(i) for i=0:3)
-        put_markers(r, side)
+        put_markers!(r, side)
     end
-    side=snake(r)
+    side=West
+    side=snake!(r, side)
     mark2border(r, side)
     along!(r, Sud)
     along!(r, Ost)
-    move(r, Nord, num_Sud1)
-    move(r, West, num_Ost1)
-    move(r, Nord, num_Sud2)
+    along_num!(r, Nord, num_Sud1)
+    along_num!(r, West, num_Ost1)
+    along_num!(r, Nord, num_Sud2)
 end
 
 function mark2border(r::Robot, side1::HorizonSide)#ставит по внешнему периметру внутреннего прямоугольника маркеры
     while ismarker(r)==false
-        side2=HorizonSide(mod(Int(side1)+1, 4))
+        side2=left(side1)
         while isborder(r, side1)==true
             putmarker!(r)
             move!(r, side2)
         end
         putmarker!(r)
         move!(r, side1)
-        side1=HorizonSide(mod(Int(side1)+3, 4))
+        side1=right(side1)
     end
 end
-function snake(r::Robot)#идёт змейкой и ищет внутренние стенки
-    side=West
+
+function snake!(r::Robot, side::HorizonSide)#идёт змейкой и ищет внутренние стенки
     while isborder(r, Nord)==false
-        while isborder(r, side)==false
-            move!(r, side)
-        end
+        along!(r, side)
         if ismarker(r)==false
             break
         end
@@ -41,7 +40,7 @@ function snake(r::Robot)#идёт змейкой и ищет внутренни�
     return side
 end
 
-put_markers(r::Robot, side::HorizonSide)=
+put_markers!(r::Robot, side::HorizonSide)=
 while isborder(r, side)==false
     putmarker!(r)
     move!(r, side)
@@ -62,10 +61,15 @@ function numside(r::Robot, side)#считает сколько клеток пр
     end
     return num_sides
 end
-function move(r::Robot, side, num)#идёт в направлении side num количество раз
+
+function along_num!(r::Robot, side, num)#идёт в направлении side num количество раз
     while num!=0
         move!(r::Robot, side)
         num-=1
     end
 end
+
+left(side::HorizonSide)=HorizonSide(mod(Int(side)+1, 4))
+right(side::HorizonSide)=HorizonSide(mod(Int(side)+3, 4))
 inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
+
