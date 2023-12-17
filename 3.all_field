@@ -1,0 +1,50 @@
+using HorizonSideRobots
+
+function all_field!(r::Robot)
+    num_Sud=num_side(r, Sud)
+    num_Ost=num_side(r, Ost)
+    side=West
+    snake!(r, side)
+    along!(r, Sud)
+    along!(r, Ost)
+    along_num!(r, Nord, num_Sud)
+    along_num!(r, West, num_Ost)
+end
+
+function snake!(r::Robot, side::HorizonSide)
+    while isborder(r, Nord)==false
+        putmarkers!(r, side)
+        side=inverse(side)
+        move!(r, Nord)
+    end
+end
+
+function num_side(r::Robot, side::HorizonSide)
+    num_sides=0
+    while isborder(r, side)==false
+        move!(r, side)
+        num_sides+=1
+    end
+    return num_sides
+end
+
+function along!(r, side) 
+    while isborder(r, side)==false
+        move!(r, side)
+    end
+end
+
+putmarkers!(r::Robot, side::HorizonSide)=
+while isborder(r, side)==false
+    move!(r, side)
+    putmarker!(r)
+end
+
+function along_num!(r::Robot, side, num)
+    while num!=0
+        move!(r::Robot, side)
+        num-=1
+    end
+end
+
+inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
