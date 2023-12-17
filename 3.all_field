@@ -13,6 +13,7 @@ end
 
 function snake!(r::Robot, side::HorizonSide)
     while isborder(r, Nord)==false
+        putmarker!(r)
         putmarkers!(r, side)
         side=inverse(side)
         move!(r, Nord)
