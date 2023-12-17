@@ -5,19 +5,23 @@ function mark_kross!(r::Robot)
     end
     putmarker!(r)
 end
+
 putmarkers!(r::Robot, side1::HorizonSide, side2::HorizonSide)=
 while (isborder(r, side2)==false) && (isborder(r, side1)==false)
     moved(r, side1, side2)
     putmarker!(r)
 end
+
 move_by_markers(r::Robot, side1::HorizonSide, side2::HorizonSide)=
 while ismarker(r)==true
     moved(r, side1, side2)
 end
-inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
+
 function moved(r::Robot, side1, side2)
     move!(r, side1)
     move!(r, side2)
     
 end
+
+inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
 next_side(side::HorizonSide)=HorizonSide(mod(Int(side)+1, 4))
