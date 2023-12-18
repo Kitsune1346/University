@@ -1,19 +1,19 @@
-function perimetrhard(r::Robot)
-    side1, A=vugol(r)
+function perimeterhard(r::Robot)
+    side1, A=sud_ost_square!(r)
     for side in (HorizonSide(i) for i=0:3)
-        putmark(r, side)
+        put_markers!(r, side)
     end
     goback(r, A, inverse(side1))
 end
 
-function putmark(r::Robot, side::HorizonSide)
+function put_markers!(r::Robot, side::HorizonSide)
     while isborder(r, side)==false
         putmarker!(r)
         move!(r, side)
     end
 end
 
-function vugol(r::Robot)
+function sud_ost_square!(r::Robot)
     A=Int[]
     side=Sud
     while isborder(r, Sud)==false || isborder(r, Ost)==false
