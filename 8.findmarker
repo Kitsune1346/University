@@ -1,16 +1,17 @@
-function find_marker(r::Robot)
+function spiral(r::Robot)
     side=Nord
     n=1
     iss_odd=false
-    while !find_marke(r, side, n)
+    while !find_marker(r, side, n)
         if iss_odd==true 
             n+=1
         end
-        side=otherside(side)
+        side=left(side)
         iss_odd=!iss_odd
     end
 end
-function find_marke(r::Robot, side::HorizonSide, num_steps::Integer)
+
+function find_marker(r::Robot, side::HorizonSide, num_steps::Integer)
     for _ in 1:num_steps
         if ismarker(r)
             return true
@@ -19,6 +20,6 @@ function find_marke(r::Robot, side::HorizonSide, num_steps::Integer)
     end
     return false
 end
-function otherside(side::HorizonSide)
-    side=HorizonSide(mod(Int(side)+1, 4))
-end
+
+left(side::HorizonSide)=HorizonSide(mod(Int(side)+1, 4))
+
