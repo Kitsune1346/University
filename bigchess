@@ -9,24 +9,30 @@ function bigchessmarker(r::Robot, N::Integer)
     num_Sud=num_side(r, Sud)
     side=Ost
     putmarker!(r)
+    side=snake!(r, side, K1, K2, N)
+    along!(r, West)
+    along!(r, Sud)
+    along_num!(r, Nord, num_Sud)
+    along_num!(r, Ost, num_West)
+end
+
+function snake!(r::Robot, side::Horizonside, K1, K2, N)
     while isborder(r, Nord)==false
-        while isborder(r, side)==false
-            state, K1=other(state, K1, N)
-            K1=move_with_N(r, side, K1, state)
-        end
+        K1, N, state=along(r, side, K1, N, state)
         state, K2=other(state, K2, N)
         K2=move_with_N(r, Nord, K2, state)
         K1=N-K1-1
         side=inverse(side)
     end
+    along(r, side, K1, N, state)
+end
+
+function along(r::Robot, side::Horizonside, K, N)
     while isborder(r, side)==false
-        state, K1=other(state, K1, N)
-        K1=move_with_N(r, side, K1, state)
+            state, K=other(state, K, N)
+            K=move_with_N(r, side, K, state)
     end
-    along(r, West)
-    along(r, Sud)
-    move(r, Nord, num_Sud)
-    move(r, Ost, num_West)
+    return K, N, state
 end
 
 function move_with_N(r::Robot, side::HorizonSide, N::Integer, state)
@@ -39,7 +45,8 @@ function move_with_N(r::Robot, side::HorizonSide, N::Integer, state)
     N-=1
     return N
 end
-function move(r::Robot, side, num)
+
+function along_num!(r::Robot, side, num)
     while num!=0
         move!(r::Robot, side)
         num-=1
@@ -55,13 +62,14 @@ function num_side(r::Robot, side)
     return num_sides
 end
 
-function along(r, side) 
+function along!(r, side) 
     while isborder(r, side)==false
         move!(r, side)
     end
 end
 
 inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
+
 function other(state, K, N)
     if K==0
         state=(mod((state+1), 2))
