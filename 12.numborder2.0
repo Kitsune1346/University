@@ -1,11 +1,5 @@
 using  HorizonSideRobots
 r=Robot(animate=true, "untitled.sit")
-function move(r::Robot, side, num)
-    while num!=0
-        move!(r::Robot, side)
-        num-=1
-    end
-end
 
 function num_border(r::Robot)
     num=0
@@ -20,8 +14,8 @@ function num_border(r::Robot)
     one_side(r, side)
     along!(r, Ost)
     along!(r, Sud)
-    move(r, Nord, num_sud)
-    move(r, West, num_ost)
+    along_num!(r, Nord, num_sud)
+    along_num!(r, West, num_ost)
     return num
 end
 function one_side(r::Robot, side::HorizonSide)
@@ -61,6 +55,13 @@ end
 function along!(r::Robot, side::HorizonSide)
     while isborder(r, side)==false
         move!(r, side)
+    end
+end
+
+function along_num!(r::Robot, side, num)
+    while num!=0
+        move!(r::Robot, side)
+        num-=1
     end
 end
 
