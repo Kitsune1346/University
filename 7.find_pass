@@ -1,0 +1,31 @@
+
+function through_the_partition!(r::Robot)#главная функция
+    i=findpropusk(r)
+    move!(r, Nord)
+    if i%2==0
+        along_num!(r, Ost, i÷2)
+    else
+        along_num!(r, West, (i+1)÷2)
+    end
+end
+
+function find_pass(r::Robot)#ищет пропуск
+    i=1
+    side=West
+    while isborder(r, Nord)==true
+        along_num!(r, side, i)
+        side=inverse(side)
+        i=i+1
+    end
+    return i
+end
+
+function along_num!(r::Robot, side::HorizonSide, num)#идёт в направлении side num количество раз
+    while num!=0
+        move!(r, side)
+        num-=1
+    end
+end
+
+inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
+  
