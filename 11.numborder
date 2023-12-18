@@ -1,30 +1,27 @@
 using  HorizonSideRobots
 r=Robot(animate=true)
-function move(r::Robot, side, num)
-    while num!=0
-        move!(r::Robot, side)
-        num-=1
-    end
-end
-move(r, Nord, 5)
-move(r, Ost, 3)
+
 function num_border(r::Robot)
     num=0
     num_ost=num_side(r, Ost)
     num_sud=num_side(r, Sud)
     side=West
+    num=snake!(r, side)
+    along!(r, Ost)
+    along!(r, Sud)
+    along_num!(r, Nord, num_sud)
+    along_num!(r, West, num_ost)
+    return num
+end
+function snake!(r, side)
+    num=0
     while isborder(r, Nord)==false
         num+=one_side(r, side)
         move!(r, Nord)
         side=inverse(side)
     end
-    one_side(r, side)
-    along!(r, Ost)
-    along!(r, Sud)
-    move(r, Nord, num_sud)
-    move(r, West, num_ost)
-    return num
 end
+
 function one_side(r::Robot, side::HorizonSide)
     n=0
     flag=false
@@ -36,8 +33,7 @@ function one_side(r::Robot, side::HorizonSide)
         if flag==true && isborder(r, Nord)==false
             n+=1
             flag=false
-        end
-        
+        end 
     end
     return n
 end
@@ -53,6 +49,13 @@ end
 function along!(r::Robot, side::HorizonSide)
     while isborder(r, side)==false
         move!(r, side)
+    end
+end
+
+function along_num!(r::Robot, side, num)
+    while num!=0
+        move!(r::Robot, side)
+        num-=1
     end
 end
 
