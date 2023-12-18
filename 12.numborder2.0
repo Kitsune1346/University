@@ -6,18 +6,23 @@ function num_border(r::Robot)
     num_ost=num_side(r, Ost)
     num_sud=num_side(r, Sud)
     side=West
-    while isborder(r, Nord)==false
-        num+=one_side(r, side)
-        move!(r, Nord)
-        side=inverse(side)
-    end
-    one_side(r, side)
+    num=snake!(r, side)
     along!(r, Ost)
     along!(r, Sud)
     along_num!(r, Nord, num_sud)
     along_num!(r, West, num_ost)
     return num
 end
+
+function snake!(r::Robot, side::HorizonSide)
+    num=0
+    while isborder(r, Nord)==false
+        num+=one_side(r, side)
+        move!(r, Nord)
+        side=inverse(side)
+    end
+end
+
 function one_side(r::Robot, side::HorizonSide)
     n=0
     state=0 #на двух и более предыдущих шагах перегородки не было
@@ -43,6 +48,7 @@ function one_side(r::Robot, side::HorizonSide)
     end
     return n
 end
+
 function num_side(r::Robot, side::HorizonSide)
     n=0
     while isborder(r, side)==false
@@ -50,8 +56,8 @@ function num_side(r::Robot, side::HorizonSide)
         n+=1
     end
     return n
-    
 end
+
 function along!(r::Robot, side::HorizonSide)
     while isborder(r, side)==false
         move!(r, side)
