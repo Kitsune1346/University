@@ -14,8 +14,8 @@ function num_border(r::Robot)
     along!(r, side)
     along!(r, Ost)
     along!(r, Sud)
-    along(r, Nord, num_sud)
-    along(r, West, num_ost)
+    along_num!(r, Nord, num_sud)
+    along_num!(r, West, num_ost)
     return num
 end
 function along_with_num_borders(r::Robot, side::HorizonSide)
@@ -49,7 +49,7 @@ function along!(r::Robot, side::HorizonSide)
     end
 end
 
-function along(r::Robot, side, num)
+function along_num!(r::Robot, side, num)
     while num!=0
         move!(r::Robot, side)
         num-=1
