@@ -6,7 +6,6 @@ function putchessmarker(r::Robot)
     state=1
     num_Ost, state=num_side(r, Ost, state)
     num_Sud, state=num_side(r, Sud, state)
-    println(state)
     move_side=West
     row_side=Nord
     while isborder(r, move_side)==false
@@ -18,11 +17,12 @@ function putchessmarker(r::Robot)
         snake(r, move_side, row_side, state)
         move_side=inverse(move_side)
     end
-    along(r, Ost)
-    along(r, Sud)
-    move(r, West, num_Ost)
-    move(r, Nord, num_Sud)
+    along!(r, Ost)
+    along!(r, Sud)
+    along_num!(r, West, num_Ost)
+    along_num!(r, Nord, num_Sud)
 end
+
 function num_side(r::Robot, side::HorizonSide, state)
     num=0
     while isborder(r, side)==false
@@ -32,12 +32,14 @@ function num_side(r::Robot, side::HorizonSide, state)
     end
     return num, state
 end
+
 function chessmarker(state)
     if state==0
         putmarker!(r)
     end
     state=other(state)
 end
+
 function snake(r::Robot, move_side::HorizonSide, nextrow_side::HorizonSide, state)
     move!(r, nextrow_side)
     state=chessmarker(state)
@@ -47,13 +49,13 @@ function snake(r::Robot, move_side::HorizonSide, nextrow_side::HorizonSide, stat
     end
 end
 
-function along(r, side) 
+function along!(r, side) 
     while isborder(r, side)==false
         move!(r, side)
     end
 end
 
-function move(r::Robot, side, num)
+function along_num!(r::Robot, side, num)
     while num!=0
         move!(r::Robot, side)
         num-=1
@@ -61,4 +63,4 @@ function move(r::Robot, side, num)
 end
 
 inverse(side::HorizonSide)=HorizonSide(mod(Int(side)+2,  4))
-other(state)=(mod((state+1), 2))
+other(state::Int)=(mod((state+1), 2))
